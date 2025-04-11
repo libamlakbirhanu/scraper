@@ -13,7 +13,7 @@ A modern web application built with Next.js that extracts and displays job posti
 
 ## Tech Stack
 
-- Next.js 13+ (App Router)
+- Next.js 15+ (App Router)
 - TypeScript
 - Tailwind CSS
 - Puppeteer (for web scraping)
