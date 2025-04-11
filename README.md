@@ -72,10 +72,6 @@ No environment variables are required for local development.
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
 ## Acknowledgments
 
 - Built with [Next.js](https://nextjs.org/) and [Tailwind CSS](https://tailwindcss.com/)
