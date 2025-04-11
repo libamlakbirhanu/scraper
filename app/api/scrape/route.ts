@@ -1,60 +1,65 @@
-import { NextRequest, NextResponse } from "next/server";
-import puppeteer from "puppeteer";
+import { NextResponse } from "next/server";
 
-export const dynamic = "force-dynamic"; // Ensure it runs server-side, not edge
+import chromium from "@sparticuz/chromium";
+import puppeteer from "puppeteer-core";
 
-export async function POST(req: NextRequest) {
-  const { url } = await req.json();
-
-  if (!url) {
-    return NextResponse.json({ error: "Missing URL" }, { status: 400 });
-  }
-
+export async function POST(request: Request) {
   try {
+    const body = await request.json();
+    const jobUrl = body.url;
+
+    if (!jobUrl) {
+      return NextResponse.json(
+        { error: "Job URL is required" },
+        { status: 400 }
+      );
+    }
+
     const browser = await puppeteer.launch({
-      headless: true,
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath(),
+      headless: chromium.headless,
     });
 
     const page = await browser.newPage();
-    await page.goto(url, { waitUntil: "networkidle0" }); // waits for all requests to finish
+    await page.goto(jobUrl, { waitUntil: "networkidle0" });
 
-    // Optional: wait for a selector that confirms content has loaded
-    await page.waitForSelector(".job-title", { timeout: 10000 });
-
-    const scrapedData = await page.evaluate(() => {
-      const company =
-        document.querySelector(".company")?.textContent?.trim() || "Datavant";
+    const rawJobData = await page.evaluate(() => {
+      const company = "Datavant";
+      const title = document.querySelector("h1")?.textContent?.trim() || "";
       const identifier =
         document.querySelector(".identifier")?.textContent?.trim() || "";
+      const location =
+        document.querySelector(".location")?.textContent?.trim() || "";
       const employee_type =
         document.querySelector(".employee-type")?.textContent?.trim() || "";
-      const title =
-        document.querySelector(".job-title")?.textContent?.trim() || "";
-      const location =
-        document.querySelector(".location")?.textContent?.trim() || "Remote";
-      const content = document.querySelector(".content-intro")?.innerHTML || "";
-      const contentDiv = document.querySelector("#job-description");
-      const job_description = contentDiv ? contentDiv.innerHTML : "";
+      const job_description =
+        document.getElementById("job-description")?.innerHTML || "";
 
       return {
         title,
         company,
-        job_description,
         identifier,
-        employee_type,
         location,
-        content,
+        employee_type,
+        job_description,
       };
     });
 
     await browser.close();
 
-    return NextResponse.json(scrapedData);
+    const jobData = {
+      ...rawJobData,
+    };
+
+    return NextResponse.json(jobData);
   } catch (error) {
-    console.error("Puppeteer error:", error);
+    console.error("Puppeteer scraping error:", error);
     return NextResponse.json(
-      { error: "Failed to scrape the page." },
+      {
+        error: "Failed to scrape job data. Try again later.",
+      },
       { status: 500 }
     );
   }
