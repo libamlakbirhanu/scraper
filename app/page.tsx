@@ -63,12 +63,18 @@ export default function Home() {
             </h1>
             <button
               onClick={() => setIsDarkMode(!isDarkMode)}
-              className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
+              className={`p-2 rounded-full transition-colors duration-200 ${
+                isDarkMode
+                  ? "hover:bg-gray-600"
+                  : "hover:bg-gray-200 dark:hover:bg-gray-600"
+              }`}
             >
               <svg
-                className={`w-6 h-6 ${
-                  isDarkMode ? "text-yellow-400" : "text-gray-600"
-                } transition-colors duration-200`}
+                className={`w-6 h-6 transition-colors duration-200 ${
+                  isDarkMode
+                    ? "text-yellow-400"
+                    : "text-gray-600 dark:text-white"
+                }`}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -104,11 +110,13 @@ export default function Home() {
           <div className="relative group">
             <Input
               type="url"
-              placeholder="https://example.com/job-posting"
+              placeholder="Enter job posting URL..."
               value={url}
               onChange={(e) => setUrl(e.target.value)}
-              className={`w-full transition-all duration-200 ${
-                loading ? "opacity-50 cursor-not-allowed" : ""
+              className={`w-full px-4 py-3 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 ${
+                isDarkMode
+                  ? "bg-gray-800 text-white placeholder-white"
+                  : "bg-white text-gray-900 placeholder-gray-500"
               }`}
               required
               disabled={loading}
