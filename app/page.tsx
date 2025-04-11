@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import Loader from "@/components/ui/loader";
 import JobCard from "@/components/ui/job-card";
 import { JobData } from "@/lib/types";
+import { Moon, Sun } from "lucide-react";
 
 export default function Home() {
   const [url, setUrl] = useState("");
@@ -79,21 +80,7 @@ export default function Home() {
                 stroke="currentColor"
                 viewBox="0 0 24 24"
               >
-                {isDarkMode ? (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-                  />
-                ) : (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 1.536l-.103.129C15.09 6.973 13.633 5 11.5 5A6.58 6.58 0 006 11.5c1.633 0 3.09 1.973 3.365 3.366l.129-.103m0 0a4.501 4.501 0 01.244 1.243M9 10.5H3m12 0h3m-4.5 0H15"
-                  />
-                )}
+                {isDarkMode ? <Sun /> : <Moon />}
               </svg>
             </button>
           </div>
